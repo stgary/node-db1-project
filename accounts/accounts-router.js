@@ -5,6 +5,20 @@ const { del } = require("../data/dbConfig.js");
 
 const router = express.Router();
 
+router.post("/", (req, res) => {
+    const account = req.body;
+    db("accounts")
+        .insert(account)
+        .returning("id") 
+        .then(ids => {
+            res.status(201).json({ inserted: ids });
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ error: error.message });
+        });
+});
+
 router.get("/", (req, res) => {
     db.select("*")
         .from("accounts")
